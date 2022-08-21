@@ -1,51 +1,40 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const SimpleInput = (props) => {
-  const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+  const [formIsValid, setFormIsValid] = useState(false);
 
+  const enteredNameIsValid = enteredName.trim().length > 0;
   const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   useEffect(() => {
     if (enteredNameIsValid) {
-      console.log("Name is valid");
+      setFormIsValid(true);
+    } else {
+      setFormIsValid(false);
     }
   }, [enteredNameIsValid]);
 
   const nameInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
-    if (event.target.value.trim() !== "") {
-      setEnteredNameIsValid(true);
-      return;
-    }
   };
 
   const nameINputBlurHandler = (event) => {
     setEnteredNameTouched(true);
-    if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
-      return;
-    }
   };
 
   const formSumbitHandler = (event) => {
     event.preventDefault();
-
     setEnteredNameTouched(true);
 
-    if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
-      return;
-    }
-
-    setEnteredNameIsValid(true);
-    const enteredValue = nameInputRef.current.value;
-    console.log(enteredValue);
+    if (!enteredNameIsValid) return;
     props.onSubmit(enteredName);
+
     // nameInputRef.current.value = ""; => Not ideal because we are using useRef() which manipulates the DOM directly.
     setEnteredName("");
+
+    setEnteredNameTouched(false);
   };
 
   const nameIputClasses = nameInputIsInvalid
@@ -57,7 +46,6 @@ const SimpleInput = (props) => {
       <div className={nameIputClasses}>
         <label htmlFor="name">Your Name</label>
         <input
-          ref={nameInputRef}
           type="text"
           id="name"
           value={enteredName}
@@ -69,7 +57,7 @@ const SimpleInput = (props) => {
         )}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
