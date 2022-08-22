@@ -27,7 +27,7 @@ const SimpleInput = (props) => {
     nameInputBlurHandler();
     emailInputBlurHandler();
 
-    if (nameInputhasError || emailInputhasError) return;
+    if (!formIsValid) return;
 
     props.onSubmit(enteredName, enteredEmail);
 
@@ -36,11 +36,11 @@ const SimpleInput = (props) => {
   };
 
   const nameIputClasses = nameInputhasError
-    ? "form-control is-invalid"
+    ? "form-control invalid"
     : "form-control";
 
   const emailInputClasses = emailInputhasError
-    ? "form-control is-invalid"
+    ? "form-control invalid"
     : "form-control";
 
   return (
